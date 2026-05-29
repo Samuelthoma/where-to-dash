@@ -15,82 +15,12 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 
-import {
-  Coffee,
-  Utensils,
-  Trees,
-  Waves,
-  Mountain,
-  Hotel,
-  Landmark,
-  ShoppingBag,
-  Tent,
-  Moon,
-  Users,
-  MapPin,
-} from "lucide-react";
-
+import { MapPin } from "lucide-react";
 import { toast } from "sonner";
 
-import { supabase } from "@/lib/supabase";
-
-const categories = [
-  {
-    value: "cafe",
-    label: "Cafe",
-    icon: Coffee,
-  },
-  {
-    value: "restaurant",
-    label: "Restaurant",
-    icon: Utensils,
-  },
-  {
-    value: "nature",
-    label: "Nature",
-    icon: Trees,
-  },
-  {
-    value: "beach",
-    label: "Beach",
-    icon: Waves,
-  },
-  {
-    value: "mountain",
-    label: "Mountain",
-    icon: Mountain,
-  },
-  {
-    value: "hotel",
-    label: "Hotel",
-    icon: Hotel,
-  },
-  {
-    value: "museum",
-    label: "Museum",
-    icon: Landmark,
-  },
-  {
-    value: "shopping",
-    label: "Shopping",
-    icon: ShoppingBag,
-  },
-  {
-    value: "camping",
-    label: "Camping",
-    icon: Tent,
-  },
-  {
-    value: "nightlife",
-    label: "Nightlife",
-    icon: Moon,
-  },
-  {
-    value: "family",
-    label: "Family",
-    icon: Users,
-  },
-];
+import { categories } from "@/types/categories";
+import { useProcessCleanData } from "../hooks/useProcessCleanData";
+import { useRejectRawData } from "../hooks/useRejectRawData";
 
 interface Props {
   open: boolean;
@@ -100,9 +30,14 @@ interface Props {
 }
 
 export function CleanDialog({ open, onOpenChange, row, onSuccess }: Props) {
-  const [loading, setLoading] = useState(false);
-
   const [showVideo, setShowVideo] = useState(false);
+
+  const { mutateAsync: processClean, isPending: isCleaning } =
+    useProcessCleanData();
+  const { mutateAsync: rejectData, isPending: isRejecting } =
+    useRejectRawData();
+
+  const isPending = isCleaning || isRejecting;
 
   const [form, setForm] = useState({
     category: "",
@@ -130,71 +65,25 @@ export function CleanDialog({ open, onOpenChange, row, onSuccess }: Props) {
 
   const handleProcess = async () => {
     try {
-      setLoading(true);
-
-      const { error: insertError } = await supabase
-        .from("cleaned_tiktok_data")
-        .insert({
-          raw_id: row.id,
-          url: row.url,
-          caption: row.alt_text,
-          views: row.views,
-
-          category: form.category,
-
-          place_name: form.place_name,
-          address: form.address,
-          city: form.city,
-          province: form.province,
-          country: form.country,
-
-          confidence: 1,
-        });
-
-      if (insertError) throw insertError;
-
-      const { error: updateError } = await supabase
-        .from("raw_tiktok_data")
-        .update({
-          cleaning_status: "cleaned",
-          extraction_status: "done",
-        })
-        .eq("id", row.id);
-
-      if (updateError) throw updateError;
-
+      await processClean({ row, form });
       toast.success("Cleaned successfully");
-
       onSuccess();
       onOpenChange(false);
     } catch (err) {
       console.error(err);
-
       toast.error("Failed to clean");
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleFail = async () => {
     try {
-      setLoading(true);
-
-      await supabase
-        .from("raw_tiktok_data")
-        .update({
-          cleaning_status: "rejected",
-        })
-        .eq("id", row.id);
-
+      await rejectData({ id: row.id });
       toast.success("Marked as rejected");
-
       onSuccess();
       onOpenChange(false);
     } catch (err) {
+      console.error(err);
       toast.error("Failed to update");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -278,7 +167,6 @@ export function CleanDialog({ open, onOpenChange, row, onSuccess }: Props) {
               <div className="grid grid-cols-2 gap-2">
                 {categories.map((category) => {
                   const Icon = category.icon;
-
                   const active = form.category === category.value;
 
                   return (
@@ -394,14 +282,14 @@ export function CleanDialog({ open, onOpenChange, row, onSuccess }: Props) {
               <Button
                 variant="destructive"
                 onClick={handleFail}
-                disabled={loading}
+                disabled={isPending}
               >
                 Reject
               </Button>
 
               <Button
                 onClick={handleProcess}
-                disabled={!form.category || !form.place_name || loading}
+                disabled={!form.category || !form.place_name || isPending}
               >
                 Process Clean
               </Button>

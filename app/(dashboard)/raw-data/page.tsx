@@ -2,7 +2,7 @@
 
 import { RawDataTable } from "@/features/raw-data/components/raw-data-table"
 
-import { useRawData } from "@/features/raw-data/hooks/use-raw-data"
+import { useRawData } from "@/features/raw-data/hooks/useRawData"
 
 export default function RawDataPage() {
   const { data, isLoading, error } =

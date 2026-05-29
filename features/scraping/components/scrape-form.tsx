@@ -28,7 +28,7 @@ import {
     ScrapeSchema,
 } from "../schemas/scrape.schema"
 
-import { useScrapeTikTok } from "../hooks/use-scrape-tiktok"
+import { useScrapeTikTok } from "../hooks/useScrapeTiktok"
 
 import { ScrapeResponse } from "@/types/scraping"
 

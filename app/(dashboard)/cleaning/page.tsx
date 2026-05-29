@@ -1,6 +1,6 @@
 "use client";
 
-import { useCleaningQueue } from "@/features/cleaning/hooks/use-cleaning-queue";
+import { useCleaningQueue } from "@/features/cleaning/hooks/useCleaningQueue";
 
 import { CleaningQueueTable } from "@/features/cleaning/components/cleaning-queue-table";
 import { useState } from "react";

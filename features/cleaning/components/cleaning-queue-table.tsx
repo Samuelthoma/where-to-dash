@@ -2,7 +2,6 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-
 import {
   Table,
   TableBody,
@@ -13,7 +12,8 @@ import {
 } from "@/components/ui/table";
 
 import { RawTikTokData } from "@/types/raw-data";
-import { useState } from "react";
+import { getStatusBadge } from "@/utils/statusBadgeUtil";
+import { Inbox, Image as ImageIcon, Video } from "lucide-react";
 
 interface Props {
   data: RawTikTokData[];
@@ -24,63 +24,91 @@ interface Props {
 export function CleaningQueueTable({ data, onClean }: Props) {
   if (data.length === 0) {
     return (
-      <div className="rounded-xl border p-6 text-sm text-muted-foreground">
-        No items in cleaning queue.
+      <div className="flex flex-col items-center justify-center rounded-xl border border-dashed p-12 text-center text-muted-foreground bg-muted/20">
+        <Inbox className="mb-3 h-8 w-8 text-muted-foreground/60" />
+        <p className="text-sm font-medium text-foreground">Queue is empty</p>
+        <p className="text-sm">No items currently waiting for cleaning.</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl border">
+    <div className="rounded-xl border bg-card text-card-foreground shadow-sm overflow-hidden">
       <Table>
-        <TableHeader>
+        <TableHeader className="bg-muted/50">
           <TableRow>
-            <TableHead>Query</TableHead>
-            <TableHead>Caption</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Media Type</TableHead>
-            <TableHead>Actions</TableHead>
+            <TableHead className="font-semibold text-foreground">
+              Query
+            </TableHead>
+            <TableHead className="font-semibold text-foreground">
+              Caption
+            </TableHead>
+            <TableHead className="font-semibold text-foreground">
+              Status
+            </TableHead>
+            <TableHead className="font-semibold text-foreground">
+              Media Type
+            </TableHead>
+            <TableHead className="text-right font-semibold text-foreground">
+              Actions
+            </TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
           {data.map((row) => (
-            <TableRow key={row.id}>
-              <TableCell>{row.source_query}</TableCell>
+            <TableRow
+              key={row.id}
+              className="hover:bg-muted/30 transition-colors"
+            >
+              <TableCell className="font-medium">{row.source_query}</TableCell>
 
-              <TableCell className="max-w-100 truncate">
-                {row.alt_text ?? "-"}
+              <TableCell
+                className="max-w-50 sm:max-w-75 truncate text-muted-foreground"
+                title={row.alt_text ?? "No caption"}
+              >
+                {row.alt_text ?? "—"}
               </TableCell>
 
               <TableCell>
-                <Badge>{row.extraction_status}</Badge>
+                <Badge
+                  variant="outline"
+                  className={`capitalize ${getStatusBadge(row.extraction_status)}`}
+                >
+                  {row.extraction_status}
+                </Badge>
               </TableCell>
 
               <TableCell>
                 {row.media_type === "photo" && (
-                  <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+                  <Badge
+                    variant="outline"
+                    className="bg-sky-50 text-sky-700 hover:bg-sky-50 border-sky-200 gap-1.5 py-0.5"
+                  >
+                    <ImageIcon className="h-3 w-3" />
                     Photo
                   </Badge>
                 )}
 
                 {row.media_type === "video" && (
-                  <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+                  <Badge
+                    variant="outline"
+                    className="bg-rose-50 text-rose-700 hover:bg-rose-50 border-rose-200 gap-1.5 py-0.5"
+                  >
+                    <Video className="h-3 w-3" />
                     Video
                   </Badge>
                 )}
               </TableCell>
 
-              <TableCell className="flex gap-2">
+              <TableCell className="text-right">
                 <Button
                   size="sm"
                   variant="outline"
                   onClick={() => onClean(row)}
+                  className="hover:bg-primary hover:text-primary-foreground transition-colors"
                 >
                   Clean
-                </Button>
-
-                <Button size="sm" variant="destructive">
-                  Fail
                 </Button>
               </TableCell>
             </TableRow>
