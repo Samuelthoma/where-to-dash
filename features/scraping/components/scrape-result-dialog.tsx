@@ -101,7 +101,7 @@ export function ScrapeResultDialog({
               <h3>Full Caption</h3>
             </div>
 
-            <div className="rounded-xl border bg-muted/30 p-4 min-h-[100px] max-h-[250px] overflow-y-auto">
+            <div className="rounded-xl border bg-muted/30 p-4 min-h-25 max-h-62.5 overflow-y-auto">
               <p className="text-sm leading-relaxed whitespace-pre-wrap text-foreground">
                 {result.alt_text || (
                   <span className="text-muted-foreground italic">

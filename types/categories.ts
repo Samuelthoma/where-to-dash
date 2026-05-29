@@ -10,7 +10,8 @@ import {
   Tent,
   Moon,
   Users,
-  MapPin,
+  Castle,
+  Store,
 } from "lucide-react";
 
 export const categories = [
@@ -23,6 +24,11 @@ export const categories = [
     value: "restaurant",
     label: "Restaurant",
     icon: Utensils,
+  },
+  {
+    value: "street_food",
+    label: "Street Food",
+    icon: Store,
   },
   {
     value: "nature",
@@ -43,6 +49,11 @@ export const categories = [
     value: "hotel",
     label: "Hotel",
     icon: Hotel,
+  },
+  {
+      value: "historical",
+    label: "Historical Place",
+    icon: Castle,
   },
   {
     value: "museum",
