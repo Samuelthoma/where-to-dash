@@ -1,6 +1,8 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+
 import {
   Table,
   TableBody,
@@ -9,25 +11,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { RawTikTokData } from "@/types/raw-data";
-import { useUpdateRawStatus } from "../hooks/use-update-raw-status";
-import { toast } from "sonner";
 
-interface RawDataTableProps {
+import { RawTikTokData } from "@/types/raw-data";
+import { useState } from "react";
+
+interface Props {
   data: RawTikTokData[];
+  onClean: (row: RawTikTokData) => void;
+  onFail?: (row: RawTikTokData) => void;
 }
 
-export function RawDataTable({ data }: RawDataTableProps) {
+export function CleaningQueueTable({ data, onClean }: Props) {
   if (data.length === 0) {
     return (
       <div className="rounded-xl border p-6 text-sm text-muted-foreground">
-        No raw data found.
+        No items in cleaning queue.
       </div>
     );
   }
-
-  const { mutateAsync, isPending } = useUpdateRawStatus();
 
   return (
     <div className="rounded-xl border">
@@ -36,8 +37,8 @@ export function RawDataTable({ data }: RawDataTableProps) {
           <TableRow>
             <TableHead>Query</TableHead>
             <TableHead>Caption</TableHead>
-            <TableHead>Views</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Media Type</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -46,43 +47,40 @@ export function RawDataTable({ data }: RawDataTableProps) {
           {data.map((row) => (
             <TableRow key={row.id}>
               <TableCell>{row.source_query}</TableCell>
+
               <TableCell className="max-w-100 truncate">
                 {row.alt_text ?? "-"}
               </TableCell>
-              <TableCell>{row.views ?? "-"}</TableCell>
+
               <TableCell>
-                <Badge
-                  className={
-                    row.extraction_status === "cleaned"
-                      ? "bg-green-500"
-                      : row.extraction_status === "queued"
-                        ? "bg-yellow-500"
-                        : "bg-gray-400"
-                  }
-                >
-                  {row.extraction_status}
-                </Badge>
+                <Badge>{row.extraction_status}</Badge>
               </TableCell>
+
               <TableCell>
+                {row.media_type === "photo" && (
+                  <Badge className="bg-blue-100 text-blue-800 hover:bg-blue-100">
+                    Photo
+                  </Badge>
+                )}
+
+                {row.media_type === "video" && (
+                  <Badge className="bg-red-100 text-red-800 hover:bg-red-100">
+                    Video
+                  </Badge>
+                )}
+              </TableCell>
+
+              <TableCell className="flex gap-2">
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={async () => {
-                    try {
-                      await mutateAsync({
-                        id: row.id,
-                        status: "queued",
-                        rank: 1
-                      });
-
-                      toast.success("Moved to cleaning queue");
-                    } catch (e) {
-                      toast.error("Failed to update status");
-                    }
-                  }}
-                  disabled={isPending}
+                  onClick={() => onClean(row)}
                 >
                   Clean
+                </Button>
+
+                <Button size="sm" variant="destructive">
+                  Fail
                 </Button>
               </TableCell>
             </TableRow>

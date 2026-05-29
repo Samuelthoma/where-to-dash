@@ -19,6 +19,8 @@ export async function saveRawResults(
             result.extraction_status,
 
         scraped_at: result.scraped_at,
+        thumbnail_url: result.thumbnail_url,
+        media_type: result.media_type
     }))
 
     const { data, error } =

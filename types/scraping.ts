@@ -10,6 +10,8 @@ export interface ScrapeResult {
   scraped_at: string
   extraction_status: string
   source_query: string
+  thumbnail_url: string
+  media_type: string
 }
 
 export interface ScrapeResponse {

@@ -1,17 +1,15 @@
-import { supabase } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase";
 
 export async function getRawData() {
-  const { data, error } =
-    await supabase
-      .from("raw_tiktok_data")
-      .select("*")
-      .order("created_at", {
-        ascending: false,
-      })
+  const { data, error } = await supabase
+    .from("raw_tiktok_data")
+    .select("*")
+    .order("status_rank", { ascending: true })
+    .order("created_at", { ascending: false });
 
   if (error) {
-    throw error
+    throw error;
   }
 
-  return data
+  return data;
 }

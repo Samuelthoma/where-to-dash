@@ -7,4 +7,5 @@ export interface RawTikTokData {
     extraction_status: string
     scraped_at: string
     created_at: string
+    media_type: string
 }
