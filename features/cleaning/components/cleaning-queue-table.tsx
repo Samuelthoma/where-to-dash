@@ -16,13 +16,28 @@ import { getStatusBadge } from "@/utils/statusBadgeUtil";
 import { Inbox, Image as ImageIcon, Video } from "lucide-react";
 
 interface Props {
-  data: RawTikTokData[];
+  data?: RawTikTokData[];
+  isLoading?: boolean;
+  totalCount?: number;
+  currentPage?: number;
+  pageSize?: number;
+  onPageChange?: (page: number) => void;
   onClean: (row: RawTikTokData) => void;
   onFail?: (row: RawTikTokData) => void;
 }
 
-export function CleaningQueueTable({ data, onClean }: Props) {
-  if (data.length === 0) {
+export function CleaningQueueTable({
+  data,
+  onClean,
+  isLoading,
+  totalCount = 0,
+  currentPage = 1,
+  pageSize = 10,
+  onPageChange,
+}: Props) {
+  const totalPages = Math.max(1, Math.ceil(totalCount / pageSize));
+
+  if (!data || data.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center rounded-xl border border-dashed p-12 text-center text-muted-foreground bg-muted/20">
         <Inbox className="mb-3 h-8 w-8 text-muted-foreground/60" />
@@ -115,6 +130,45 @@ export function CleaningQueueTable({ data, onClean }: Props) {
           ))}
         </TableBody>
       </Table>
+
+      {totalCount > 0 && onPageChange && (
+        <div className="flex items-center justify-between px-6 py-4 border-t bg-muted/20">
+          <div className="text-sm text-muted-foreground">
+            Showing{" "}
+            <span className="font-medium text-foreground">
+              {(currentPage - 1) * pageSize + 1}
+            </span>{" "}
+            to{" "}
+            <span className="font-medium text-foreground">
+              {Math.min(currentPage * pageSize, totalCount)}
+            </span>{" "}
+            of <span className="font-medium text-foreground">{totalCount}</span>{" "}
+            entries
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onPageChange(currentPage - 1)}
+              disabled={currentPage === 1 || isLoading}
+            >
+              Previous
+            </Button>
+            <div className="text-sm font-medium px-2">
+              Page {currentPage} of {totalPages}
+            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onPageChange(currentPage + 1)}
+              disabled={currentPage === totalPages || isLoading}
+            >
+              Next
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

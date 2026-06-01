@@ -9,7 +9,10 @@ import { CleanDialog } from "@/features/cleaning/components/clean-dialog";
 import { useQueryClient } from "@tanstack/react-query";
 
 export default function CleaningPage() {
-  const { data, isLoading, error } = useCleaningQueue();
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
+
+  const { data, isLoading, error } = useCleaningQueue(page, pageSize);
   const queryClient = useQueryClient();
   const [selectedRow, setSelectedRow] = useState<RawTikTokData | null>(null);
   const [open, setOpen] = useState(false);
@@ -45,7 +48,15 @@ export default function CleaningPage() {
         </p>
       </div>
 
-      <CleaningQueueTable data={data ?? []} onClean={handleClean} />
+      <CleaningQueueTable
+        data={data?.data}
+        isLoading={isLoading}
+        totalCount={data?.totalCount || 0}
+        currentPage={page}
+        pageSize={pageSize}
+        onPageChange={setPage}
+        onClean={handleClean}
+      />
 
       <CleanDialog
         open={open}
