@@ -105,7 +105,6 @@ export function FilterSidebar({
         />
       </div>
 
-      {/* Categories */}
       <div className="space-y-3">
         <label className="text-sm font-medium">Categories</label>
         <ScrollArea className="h-75 pr-4">

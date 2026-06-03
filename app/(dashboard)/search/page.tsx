@@ -48,12 +48,12 @@ export default function SearchExplorerPage() {
 
       <main className="flex-1 w-full min-w-0 flex flex-col">
         {isLoading && places.length === 0 ? (
-          <div className="w-full min-h-100 flex flex-col items-center justify-center text-muted-foreground">
+          <div className="w-full px-64 min-h-100 flex flex-col items-center justify-center text-muted-foreground">
             <Loader2 className="h-8 w-8 animate-spin mb-4" />
             <p>Searching the database...</p>
           </div>
         ) : places.length === 0 ? (
-          <div className="w-full min-h-100 rounded-xl border border-dashed flex flex-col items-center justify-center bg-muted/20 text-muted-foreground">
+          <div className="w-full min-h-100 px-60 rounded-xl border border-dashed flex flex-col items-center justify-center bg-muted/20 text-muted-foreground">
             <Sparkles className="h-10 w-10 mb-4 text-muted-foreground/50" />
             <p className="font-medium text-foreground">No places found</p>
             <p className="text-sm">
