@@ -1,7 +1,9 @@
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/client";
 import { RawTikTokData } from "@/types/raw-data";
 
 export async function getRawData(page: number = 1, pageSize: number = 10) {
+  const supabase = createClient();
+  
   const from = (page - 1) * pageSize;
   const to = from + pageSize - 1;
 

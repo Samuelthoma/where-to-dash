@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/client";
 
 interface GetCleaningQueueParams {
   page?: number;
@@ -9,6 +9,8 @@ export async function getCleaningQueue({
   page = 1,
   pageSize = 10,
 }: GetCleaningQueueParams = {}) {
+  const supabase = createClient();
+
   const from = (page - 1) * pageSize;
   const to = from + pageSize - 1;
 

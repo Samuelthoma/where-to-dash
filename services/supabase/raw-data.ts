@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase"
+import { createClient } from "@/lib/client";
 
 import { ScrapeResult } from "@/types/scraping"
 
@@ -6,6 +6,7 @@ export async function saveRawResults(
     query: string,
     results: ScrapeResult[]
 ) {
+    const supabase = createClient();
     const payload = results.map((result) => ({
         source_query: query,
 

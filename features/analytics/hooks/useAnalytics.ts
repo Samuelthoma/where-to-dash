@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/client";
 import { categories } from "@/types/categories";
 
 export function useAnalytics() {
   return useQuery({
     queryKey: ["dashboard-analytics"],
     queryFn: async () => {
+      const supabase = createClient();
       const { data: cleanedData, error: cleanedError } = await supabase
         .from("cleaned_tiktok_data")
         .select("category, confidence, city");

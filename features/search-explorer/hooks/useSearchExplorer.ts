@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/client";
 import { CleanedTikTokData } from "@/types/cleaned-data";
 
 export function useSearchExplorer(
@@ -7,18 +7,20 @@ export function useSearchExplorer(
   selectedCategories: string[],
   minConfidence: number,
   page: number = 1,
-  pageSize: number = 10
+  pageSize: number = 10,
 ) {
   return useQuery({
     queryKey: [
-      "search-explorer", 
-      searchQuery, 
-      selectedCategories, 
-      minConfidence, 
-      page, 
-      pageSize
+      "search-explorer",
+      searchQuery,
+      selectedCategories,
+      minConfidence,
+      page,
+      pageSize,
     ],
     queryFn: async () => {
+      const supabase = createClient();
+
       const from = (page - 1) * pageSize;
       const to = from + pageSize - 1;
 
@@ -34,18 +36,18 @@ export function useSearchExplorer(
 
       if (searchQuery) {
         query = query.or(
-          `place_name.ilike.%${searchQuery}%,city.ilike.%${searchQuery}%,caption.ilike.%${searchQuery}%`
+          `place_name.ilike.%${searchQuery}%,city.ilike.%${searchQuery}%,caption.ilike.%${searchQuery}%`,
         );
       }
 
       const { data, count, error } = await query.range(from, to);
       if (error) throw error;
-      
+
       return {
         data: (data || []) as CleanedTikTokData[],
         total: count || 0,
       };
     },
-    placeholderData: keepPreviousData, 
+    placeholderData: keepPreviousData,
   });
 }

@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/client";
 import { categories } from "@/types/categories";
 
 export function useDashboardData() {
   return useQuery({
     queryKey: ["dashboard-data"],
     queryFn: async () => {
+      const supabase = createClient();
       const { count: queueCount, error: queueError } = await supabase
         .from("raw_tiktok_data")
         .select("*", { count: "exact", head: true })

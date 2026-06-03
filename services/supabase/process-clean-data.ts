@@ -1,6 +1,8 @@
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/client";
 
 export async function processCleanData(row: any, form: any) {
+  const supabase = createClient();
+  
   const { error: insertError } = await supabase
     .from("cleaned_tiktok_data")
     .insert({

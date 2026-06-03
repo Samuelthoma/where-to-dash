@@ -1,7 +1,9 @@
 import { extractLocationsBatch } from "@/services/ai/extract-location";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/client";
 
 export async function processRawTikTokBatch(rawItems: any[]) {
+  const supabase = createClient();
+  
   try {
     if (!rawItems || rawItems.length === 0) return 0;
 

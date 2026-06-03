@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
+
 import { extractLocationsBatch } from "@/services/ai/extract-location"; 
+import { createClient } from "@/lib/server";
 
 export async function POST(req: Request) {
+  const supabase = await createClient();
   try {
     const { ids } = await req.json();
 
