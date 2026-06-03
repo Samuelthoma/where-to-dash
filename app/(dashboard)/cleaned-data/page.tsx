@@ -12,10 +12,10 @@ export default function CleanedDataPage() {
   const { data, isLoading, isError } = useGetCleanedData(page, pageSize);
 
   return (
-    <div className="p-6 max-w-7xl space-y-6">
+    <div className="max-w-7xl space-y-6">
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Cleaned Data</h1>
-        <p className="text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           View and manage the structured places data extracted from TikTok.
         </p>
       </div>

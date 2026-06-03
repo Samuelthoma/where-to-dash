@@ -42,15 +42,6 @@ export function RawDataTable({
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-semibold tracking-tight">
-            Raw Data Inbox
-          </h2>
-          <p className="text-sm text-muted-foreground">
-            Review scraped data manually, or let AI do the heavy lifting.
-          </p>
-        </div>
-
         <Button
           onClick={() => {
             const visibleIds = data.map((item) => item.id);
