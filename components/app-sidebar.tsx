@@ -7,7 +7,6 @@ import {
   Search,
   Settings,
   Sparkles,
-  FileSearch,
   ShieldCheck,
   Layers3,
   BarChart3,
@@ -83,11 +82,6 @@ const data = {
           title: "Exports",
           url: "/exports",
           icon: Download,
-        },
-        {
-          title: "Rules",
-          url: "/rules",
-          icon: FileSearch,
         },
         {
           title: "Settings",
